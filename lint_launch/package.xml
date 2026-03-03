@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>lint_launch</name>
+  <version>1.0.0</version>
+  <description>
+     A linter for launch files
+  </description>
+  <author>Hervé Audren</author>
+  <author>Pierre Gergondet</author>
+
+  <maintainer email="herve.audren@woven.toyota">Hervé Audren</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <url type="repository">https://github.com/woven-by-toyota/lint_launch</url>
+
+  <build_depend>python3-setuptools</build_depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
