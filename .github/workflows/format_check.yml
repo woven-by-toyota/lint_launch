@@ -1,0 +1,21 @@
+name: Format Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ruff-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install ruff
+        run: uv tool install ruff
+
+      - name: Check Python formatting
+        run: ruff format --check --line-length 100 .
