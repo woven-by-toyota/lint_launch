@@ -12,7 +12,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astral-sh/setup-uv@v6
-
-      - name: Check Python formatting
-        run: uv tool run ruff format --check --line-length 100 .
+      - uses: astral-sh/ruff-action@v4
