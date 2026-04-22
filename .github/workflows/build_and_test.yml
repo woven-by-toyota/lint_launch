@@ -1,0 +1,37 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    container:
+      image: ros:jazzy-ros-base
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: src/lint_launch
+
+      - name: Install dependencies
+        run: |
+          apt-get update -q
+          rosdep update --rosdistro $ROS_DISTRO
+          rosdep install --from-paths src --ignore-src -y
+
+      - name: Build
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          colcon build --symlink-install
+
+      - name: Test
+        run: |
+          source /opt/ros/$ROS_DISTRO/setup.bash
+          colcon test
+          colcon test-result --verbose

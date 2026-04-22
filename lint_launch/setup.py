@@ -2,11 +2,8 @@
 
 # Copyright 2026 Toyota Motor Corporation
 
-import os
-
 from setuptools import find_packages, setup
 import xml.etree.ElementTree as ET
-import sys
 
 package_xml = ET.parse("package.xml").getroot()
 package_name = package_xml.find("name").text
