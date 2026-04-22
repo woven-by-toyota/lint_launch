@@ -114,9 +114,9 @@ def test_indirect_argument_passing() -> None:
     )
 
 
-def generate_sibling_includes() -> (
-    tuple[launch.actions.IncludeLaunchDescription, launch.actions.IncludeLaunchDescription]
-):
+def generate_sibling_includes() -> tuple[
+    launch.actions.IncludeLaunchDescription, launch.actions.IncludeLaunchDescription
+]:
     # This declares an argument, but it's not passed to the include
     first_sibling_desc = launch.LaunchDescription()
     first_sibling_desc.add_action(launch.actions.DeclareLaunchArgument("foo"))
