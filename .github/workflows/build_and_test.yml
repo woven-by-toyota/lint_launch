@@ -10,7 +10,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: ros:jazzy
+      image: ros:jazzy-ros-base
     defaults:
       run:
         shell: bash
