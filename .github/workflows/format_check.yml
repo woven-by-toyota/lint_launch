@@ -1,4 +1,4 @@
-name: Format Check
+name: Format and Lint
 
 on:
   push:
@@ -7,9 +7,11 @@ on:
     branches: ["**"]
 
 jobs:
-  ruff-format:
+  ruff:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v4
 
       - uses: astral-sh/ruff-action@v4.0.0
+
+      - run: ruff format --check
