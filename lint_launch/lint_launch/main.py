@@ -1,5 +1,6 @@
 # Copyright 2026 Toyota Motor Corporation
 import argparse
+import importlib
 import logging
 
 # Disable C-extension to allow customization of the parser
@@ -40,7 +41,7 @@ def do_lint(
             logger.critical(error_contents)
         else:
             error_contents = str(e)
-            logger.exception(e)
+            logger.exception()
         if junit_xml is not None:
             write_failure(junit_xml, file_name, error_contents)
         if exit_code:
@@ -59,12 +60,8 @@ def main() -> None:
 
     register_init_hooks()
 
-    try:
-        import launch_xml
-
+    if importlib.util.find_spec("launch_xml") is not None:
         register_xml_hooks()
-    except ImportError:
-        pass
 
     parser = argparse.ArgumentParser(description="Validate a launch file")
     parser.add_argument("file", type=Path, help="Launch file to be tested")
