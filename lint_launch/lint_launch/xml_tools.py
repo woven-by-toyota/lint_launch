@@ -1,13 +1,12 @@
 # Copyright 2026 Toyota Motor Corporation
 
 import functools
-import sys
-from launch.frontend.expose import instantiate_action
-import launch_xml
-import launch
-from launch_xml.entity import Entity
-from launch_xml.parser import Parser
 import xml.etree.ElementTree as ET
+
+import launch
+import launch_xml
+from launch.frontend.expose import instantiate_action
+from launch_xml.entity import Entity
 
 
 class LineNumberingParser(ET.XMLParser):

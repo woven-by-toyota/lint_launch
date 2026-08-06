@@ -2,8 +2,9 @@
 
 import functools
 import inspect
+from collections.abc import Iterator
 from contextlib import contextmanager
-from typing import Any, Iterator, Optional, Text
+from typing import Any
 
 import launch
 from launch.some_substitutions_type import SomeSubstitutionsType
@@ -19,7 +20,7 @@ def register_init(cls: type) -> None:
     func = cls.__init__  # type: ignore
 
     @functools.wraps(func)
-    def my_init(self: object, *args: Any, **kwargs: Optional[Any]) -> None:
+    def my_init(self: object, *args: Any, **kwargs: Any | None) -> None:
         # Get information about the caller of this function
         current_frame = inspect.currentframe()
         # Get information from the parent frame
@@ -36,7 +37,7 @@ def register_init(cls: type) -> None:
 
 def perform_all_substitutions(
     context: launch.LaunchContext, substitutions: SomeSubstitutionsType
-) -> Text:
+) -> str:
     try:
         value = perform_substitutions(context, normalize_to_list_of_substitutions(substitutions))
     except launch.substitutions.SubstitutionFailure as e:

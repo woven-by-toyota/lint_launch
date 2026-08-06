@@ -7,8 +7,8 @@ import logging
 import sys
 
 sys.modules["_elementtree"] = None
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Optional, Tuple
 
 import launch
 
@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 def do_lint(
     filepath: Path,
-    launch_arguments: Iterable[Tuple[str, str]],
-    junit_xml: Optional[str] = None,
+    launch_arguments: Iterable[tuple[str, str]],
+    junit_xml: str | None = None,
     exit_code: bool = False,
 ) -> None:
     source = launch.launch_description_sources.AnyLaunchDescriptionSource(filepath.as_posix())
@@ -76,7 +76,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    launch_arguments: list[Tuple[str, str]] = []
+    launch_arguments: list[tuple[str, str]] = []
     for arg in args.launch_args:
         name, value = arg.split(":=")
         launch_arguments.append((name, value))
