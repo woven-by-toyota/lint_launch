@@ -241,10 +241,10 @@ def validate_entity(
 
 def register_init_hooks() -> None:
     visited_cls: list[type] = []
-    for cls in _validate_launch_actions.keys():
+    for cls in _validate_launch_actions:
         for base_cls in visited_cls:
             if issubclass(cls, base_cls):
-                raise RuntimeError(
+                raise TypeError(
                     f"{cls} comes after {base_cls} in launch action keys, that's likely a programming mistake"
                 )
         register_init(cls)
