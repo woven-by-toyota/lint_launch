@@ -1,7 +1,6 @@
 # Copyright 2026 Toyota Motor Corporation
 
 
-
 class ValidationError(Exception):
     pass
 
