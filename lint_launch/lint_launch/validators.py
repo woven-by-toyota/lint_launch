@@ -2,7 +2,8 @@
 
 import logging
 from collections import OrderedDict
-from typing import Any, Iterable, Tuple, cast
+from collections.abc import Iterable
+from typing import Any, cast
 
 import launch
 import launch_ros
@@ -54,7 +55,7 @@ def validate_source_action(
 
 def validate_source(
     source: launch.LaunchDescriptionSource,
-    arguments: Iterable[Tuple[SomeSubstitutionsType, SomeSubstitutionsType]],
+    arguments: Iterable[tuple[SomeSubstitutionsType, SomeSubstitutionsType]],
     context: launch.LaunchContext,
     passed_arguments: list[str],
 ) -> None:
@@ -76,7 +77,7 @@ def validate_source(
         # Validate sub-launch description using only the resolved arguments, which are explicitly passed to it and must be declared there.
         validate_launch_description(description, resolved_arguments, context)
     except ValidationError as e:
-        raise ValidationError("Failed to process {}".format(source.location)) from e
+        raise ValidationError(f"Failed to process {source.location}") from e
 
     # Keep track of passed arguments: resolved_arguments now contain all arguments defined in the
     # included launch descriptions, and appending it to passed_arguments allows us to recursively
@@ -240,10 +241,10 @@ def validate_entity(
 
 def register_init_hooks() -> None:
     visited_cls: list[type] = []
-    for cls in _validate_launch_actions.keys():
+    for cls in _validate_launch_actions:
         for base_cls in visited_cls:
             if issubclass(cls, base_cls):
-                raise RuntimeError(
+                raise TypeError(
                     f"{cls} comes after {base_cls} in launch action keys, that's likely a programming mistake"
                 )
         register_init(cls)

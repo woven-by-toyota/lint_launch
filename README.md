@@ -51,10 +51,13 @@ If you build a launch file that uses a non-existing executable:
 import launch
 import launch_ros
 
+
 def generate_launch_description():
-    return launch.LaunchDescription([
-      launch_ros.actions.Node(executable='foo', package='bar', name='foobar'),
-    ])
+    return launch.LaunchDescription(
+        [
+            launch_ros.actions.Node(executable="foo", package="bar", name="foobar"),
+        ]
+    )
 ```
 
 Then, the linter will point out the error:
@@ -70,11 +73,14 @@ You can also pass arguments to the linter, just like you would a regular launch 
 ```python
 import launch
 
+
 def generate_launch_description():
-    return launch.LaunchDescription([
-      launch.actions.DeclareLaunchArgument('foo'),
-      launch.actions.LogInfo(msg=launch.substitutions.LaunchConfiguration('foo')),
-    ])
+    return launch.LaunchDescription(
+        [
+            launch.actions.DeclareLaunchArgument("foo"),
+            launch.actions.LogInfo(msg=launch.substitutions.LaunchConfiguration("foo")),
+        ]
+    )
 ```
 
 Then:

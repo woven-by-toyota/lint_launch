@@ -1,7 +1,5 @@
 # Copyright 2026 Toyota Motor Corporation
 
-from typing import Optional
-
 
 class ValidationError(Exception):
     pass
@@ -10,7 +8,7 @@ class ValidationError(Exception):
 def custom_exception_format(e: ValidationError) -> str:
     indent = ""
     lines = []
-    current_exception: Optional[BaseException] = e
+    current_exception: BaseException | None = e
     while current_exception is not None:
         lines.append(indent + str(current_exception))
         current_exception = current_exception.__cause__

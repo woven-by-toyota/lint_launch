@@ -1,24 +1,32 @@
 # Copyright 2026 Toyota Motor Corporation
-
 import argparse
+import importlib
 import logging
+
+# Disable C-extension: this must be done before importing launch_xml or elementTree
+# CPython loads the C-extension for elementTree, overriding the pure Python version, and preventing
+# us from customizing the parser:
+# https://github.com/python/cpython/blob/af930c13787a15c22187d5d526f74f35c95f8056/Lib/xml/etree/ElementTree.py#L2122
 import sys
+
+sys.modules["_elementtree"] = None
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable, Optional, Tuple
 
 import launch
 
 from lint_launch.test_output import write_failure, write_success
 from lint_launch.validation_error import ValidationError, custom_exception_format
 from lint_launch.validators import register_init_hooks, validate_source
+from lint_launch.xml_tools import register_xml_hooks
 
 logger = logging.getLogger(__name__)
 
 
 def do_lint(
     filepath: Path,
-    launch_arguments: Iterable[Tuple[str, str]],
-    junit_xml: Optional[str] = None,
+    launch_arguments: Iterable[tuple[str, str]],
+    junit_xml: str | None = None,
     exit_code: bool = False,
 ) -> None:
     source = launch.launch_description_sources.AnyLaunchDescriptionSource(filepath.as_posix())
@@ -35,7 +43,7 @@ def do_lint(
             logger.critical(error_contents)
         else:
             error_contents = str(e)
-            logger.exception(e)
+            logger.exception("Unhandled exception during linting")
         if junit_xml is not None:
             write_failure(junit_xml, file_name, error_contents)
         if exit_code:
@@ -54,6 +62,9 @@ def main() -> None:
 
     register_init_hooks()
 
+    if importlib.util.find_spec("launch_xml") is not None:
+        register_xml_hooks()
+
     parser = argparse.ArgumentParser(description="Validate a launch file")
     parser.add_argument("file", type=Path, help="Launch file to be tested")
     parser.add_argument("--junit-xml", help="Output a test report")
@@ -64,7 +75,7 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    launch_arguments: list[Tuple[str, str]] = []
+    launch_arguments: list[tuple[str, str]] = []
     for arg in args.launch_args:
         name, value = arg.split(":=")
         launch_arguments.append((name, value))
