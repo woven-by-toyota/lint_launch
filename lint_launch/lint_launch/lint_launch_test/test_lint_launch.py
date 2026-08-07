@@ -209,8 +209,8 @@ def test_parse_xml_file(tmp_path) -> None:
     with pytest.raises(ValidationError) as ve:
         validate_source(source, [], launch.LaunchContext(), [])
 
-    # Error happens on line 2 of the XML file. Top-level error will say that the file validation
-    # failed, and the cause will have the line number in the message.
+    # Unknown package error happens on line 2 of the XML file. Top-level error will say that the
+    # file validation failed, and the cause will have the line number in the message.
     assert f"{filepath.as_posix()}:2" in str(ve.value.__cause__)
 
 def test_parse_py_file(tmp_path) -> None:
@@ -229,6 +229,6 @@ def generate_launch_description():
     with pytest.raises(ValidationError) as ve:
         validate_source(source, [], launch.LaunchContext(), [])
 
-    # Error happens on line 5 of the Python file. Top-level error will say that the file validation
-    # failed, and the cause will have the line number in the message.
+    # Undefined argument error happens on line 5 of the Python file. Top-level error will say that
+    # the file validation failed, and the cause will have the line number in the message.
     assert f"{filepath.as_posix()}:5" in str(ve.value.__cause__)
