@@ -3,8 +3,10 @@ import argparse
 import importlib
 import logging
 
-# Disable C-extension to allow customization of the parser
-# This must be done before importing launch_xml or elementTree
+# Disable C-extension: this must be done before importing launch_xml or elementTree
+# CPython loads the C-extension for elementTree, overriding the pure Python version, and preventing
+# us from customizing the parser:
+# https://github.com/python/cpython/blob/af930c13787a15c22187d5d526f74f35c95f8056/Lib/xml/etree/ElementTree.py#L2122
 import sys
 
 sys.modules["_elementtree"] = None
