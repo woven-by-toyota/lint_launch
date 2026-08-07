@@ -43,7 +43,7 @@ def do_lint(
             logger.critical(error_contents)
         else:
             error_contents = str(e)
-            logger.exception()
+            logger.exception("Unhandled exception during linting")
         if junit_xml is not None:
             write_failure(junit_xml, file_name, error_contents)
         if exit_code:
