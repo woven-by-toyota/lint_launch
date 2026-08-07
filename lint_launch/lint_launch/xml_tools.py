@@ -37,10 +37,9 @@ def load(cls: type[XMLParser], file: str | io.TextIOBase) -> tuple[XMLEntity, XM
 def my_instantiation(entity: Entity, parser: Parser) -> launch.Action:
     action = instantiate_action(entity, parser)
     if hasattr(entity, "_Entity__xml_element"):
-        action.__location__ = (
-            entity._Entity__xml_element._file_name,
-            entity._Entity__xml_element._start_line_number,
-        )
+        xml_element = entity._Entity__xml_element
+        if hasattr(xml_element, "_start_line_number"):
+            action.__location__ = (xml_element._file_name, xml_element._start_line_number)
     return action
 
 
