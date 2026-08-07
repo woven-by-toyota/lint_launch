@@ -3,6 +3,7 @@
 import launch
 import launch_ros
 import pytest
+
 from lint_launch.validation_error import ValidationError
 from lint_launch.validators import (
     register_init_hooks,
