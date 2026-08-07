@@ -1,6 +1,16 @@
 # Copyright 2026 Toyota Motor Corporation
 
+# Force usage of the pure Python implementation of ElementTree
+# Note that pytest might have already imported it in plugins, so we must reload it
+import sys
+sys.modules["_elementtree"] = None
+import importlib
+import xml.etree.ElementTree
+importlib.reload(xml.etree.ElementTree)
+
+
 import launch
+import launch_xml
 import launch_ros
 import pytest
 
@@ -15,8 +25,10 @@ from lint_launch.validators import (
     validate_source_action,
     validate_timer,
 )
+from lint_launch.xml_tools import register_xml_hooks
 
 register_init_hooks()
+register_xml_hooks()
 
 
 def test_empty() -> None:
@@ -184,3 +196,39 @@ def test_double_sibling_argument_definition() -> None:
 
     # Doesn't raise because the different includes have their own scope
     validate_launch_description(outer_desc, [], launch.LaunchContext())
+
+def test_parse_xml_file(tmp_path) -> None:
+    filepath = tmp_path / "test.xml"
+    with open(filepath, "w") as f:
+        f.write(
+            """<launch>
+            <node pkg="foo" exec="bar" name="foobar"/>
+                </launch>""")
+    source = launch_xml.launch_description_sources.XMLLaunchDescriptionSource(filepath.as_posix())
+
+    with pytest.raises(ValidationError) as ve:
+        validate_source(source, [], launch.LaunchContext(), [])
+
+    # Error happens on line 2 of the XML file. Top-level error will say that the file validation
+    # failed, and the cause will have the line number in the message.
+    assert f"{filepath.as_posix()}:2" in str(ve.value.__cause__)
+
+def test_parse_py_file(tmp_path) -> None:
+    filepath = tmp_path / "test.py"
+    with open(filepath, "w") as f:
+        f.write(
+            """import launch
+
+def generate_launch_description():
+    return launch.LaunchDescription([
+        launch.actions.DeclareLaunchArgument("foo"),
+    ])""")
+
+    source = launch.launch_description_sources.PythonLaunchDescriptionSource(filepath.as_posix())
+
+    with pytest.raises(ValidationError) as ve:
+        validate_source(source, [], launch.LaunchContext(), [])
+
+    # Error happens on line 5 of the Python file. Top-level error will say that the file validation
+    # failed, and the cause will have the line number in the message.
+    assert f"{filepath.as_posix()}:5" in str(ve.value.__cause__)
